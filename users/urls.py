@@ -13,5 +13,12 @@ urlpatterns = [
     path('new_exp',views.new_exp,name='new_exp'),
     path('new_doc',views.new_doc,name='new_doc'),
     path('doctors',views.doctors,name='doctors'),
+    path('mark/<int:id>/',views.mark,name='mark'),
+    path('cmark/<int:id>/',views.cmark,name='cmark'),
+    path('credits',views.credits,name='credits'),
+    path('search',views.search,name='search'),
+    path('search_data',views.search_data,name='search_data'),
+    path('dayclose',views.dayclose,name='dayclose'),
+    path('daycloseamount',views.daycloseamount,name='daycloseamount')
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

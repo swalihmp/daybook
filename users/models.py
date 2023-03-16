@@ -22,6 +22,7 @@ class Expenses(models.Model):
     time = models.TimeField(null=False)
     disc = models.CharField(max_length=100,null=True)
     status = models.BooleanField(default=False)
+    exp_type = models.CharField(max_length=20,default="exp",null=False)
     
 class Incomes(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -42,3 +43,18 @@ class Doc_op(models.Model):
     doc_name = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     opnum = models.IntegerField(null=False)
     
+class DayClose(models.Model):
+    date = date = models.DateField(null=False)
+    t_expense = models.BigIntegerField(null=False)
+    t_income = models.BigIntegerField(null=False)
+    ClosingAmount = models.BigIntegerField(null=False)
+    CashInhand = models.BigIntegerField(null=False)
+    diffrence = models.BigIntegerField(null=False)
+    
+class Cash_InHand(models.Model):
+    amount = models.BigIntegerField(null=False)
+    
+class BankDeposit(models.Model):
+    today = models.DateField()
+    deposite = models.BigIntegerField(null=False)
+    disc = models.CharField(max_length=50)

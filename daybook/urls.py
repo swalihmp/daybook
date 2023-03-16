@@ -29,5 +29,6 @@ urlpatterns = [
     path('',views.HomePage, name='HomePage'),
     path('users/',include('users.urls')),
     path('adminp/',include('adminp.urls')),
+    path('bank_deposit',views.bank_deposit,name='bank_deposit')
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from datetime import datetime
-from users.models import Expenses,Incomes,Expense
+from users.models import Expenses,Incomes,Expense,Cash_InHand,BankDeposit
 
 # Create your views here.
 
@@ -25,6 +25,8 @@ def HomePage(request):
         x = today_income[i].amount
         today_inc = today_inc+int(x)
         
+    cash_inhand = Cash_InHand.objects.get(id='1')
+    
     exp_name = Expense.objects.get(exp_name='Patient Pending')
     pendings = Expenses.objects.filter(status=False,exp=exp_name)
     
@@ -34,7 +36,24 @@ def HomePage(request):
         'today_income':today_income,
         'today_exp':today_exp,
         'today_inc':today_inc,
-        'pendings':pendings
+        'pendings':pendings,
+        'cash_inhand':cash_inhand
     }
     
     return render(request,'homepage.html',context)
+
+def bank_deposit(request):
+    if request.method == 'POST':
+        today =request.POST['today']
+        deposite =request.POST['amount']
+        disc = request.POST['disc']
+        
+        BankDeposit.objects.create(today=today,deposite=deposite,disc=disc)
+        
+        my_instance = Cash_InHand.objects.get(id='1')
+        cash = my_instance.amount
+        
+        ex1 = Cash_InHand.objects.filter(id='1').update(
+            amount = int(cash)-int(deposite)
+        )
+        return redirect('HomePage')
