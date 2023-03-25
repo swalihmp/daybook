@@ -1,13 +1,14 @@
 from django.shortcuts import render,redirect
 from datetime import datetime
 from users.models import Expenses,Incomes,Expense,Cash_InHand,BankDeposit
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 # def custom_404(request, exception=None):
 #     return render(request, '404.html')
 
-
+@login_required(login_url = 'login')
 def HomePage(request):
     date = datetime.now().date()
     
@@ -42,6 +43,7 @@ def HomePage(request):
     
     return render(request,'homepage.html',context)
 
+@login_required(login_url = 'login')
 def bank_deposit(request):
     if request.method == 'POST':
         today =request.POST['today']
@@ -56,4 +58,6 @@ def bank_deposit(request):
         ex1 = Cash_InHand.objects.filter(id='1').update(
             amount = int(cash)-int(deposite)
         )
+        return redirect('HomePage')
+    else:
         return redirect('HomePage')

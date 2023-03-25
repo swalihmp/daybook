@@ -61,13 +61,15 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="{% url 'HomePage' %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="{% url 'addexp' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Add Expense</a>
-                    <a href="{% url 'addincome' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Add Income</a>
-                    <a href="{% url 'doctors' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Doctor Op</a>
-                    <a href="{% url 'credits' %}" class="nav-item nav-link "><i class="fa fa-th me-2"></i>Credit Pending</a>
-                    <a href="{% url 'search' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Search</a>
-                    <a href="{% url 'dayclose' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Day Close</a>
+                    <a href="{% url 'admin_HomePage' %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Home Page</a>
+                    <a href="{% url 'register' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>User Register</a>
+                    <a href="{% url 'users' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>User Manage</a>
+                    <a href="{% url 'datewiseexp' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Date Wise Exp</a>
+                    <a href="{% url 'datewiseinc' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Date Wise Inc</a>
+                    <a href="{% url 'doctor_report' %}" class="nav-item nav-link "><i class="fa fa-th me-2"></i>Doctor Report</a>
+                    <a href="{% url 'admin_search' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Search</a>
+                    <a href="{% url 'credits_p' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Credit Pendings</a>
+                    <a href="{% url 'patient_p' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Patient Pendings</a>
                 </div>
             </nav>
         </div>
@@ -140,6 +142,28 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Last Month Expense</h6>
+                                <h6 class="mb-0">Total : {{monthly_exp_total}}</h6>
+                            </div>
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Last Month Income</h6>
+                                <h6 class="mb-0">Total : {{monthly_inc_total}}</h6>
+                            </div>
+                            <canvas id="myChart1"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">Today Income</h6>
                             <table class="table table-bordered">
@@ -187,67 +211,6 @@
                     </div>    
                 </div>
             </div>
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-sm-12 col-md-9">
-                        <div class="h-100 bg-secondary rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Pending Bills</h6>
-                                <a href="">Show All</a>
-                            </div>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Expense</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Discription</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in pendings %}
-                                    <tr>
-                                        <th scope="row">{{forloop.counter}}</th>
-                                        <td>{{i.exp.exp_name}}</td>
-                                        <td>{{i.date}}</td>
-                                        <td>{{i.amount}}</td>
-                                        <td>{{i.disc}}</td>
-                                        <td>
-                                            <a href="{% url 'mark' i.id %}" class="text-success">Mark Paid</button></a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-xl-3">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Bank Deposit</h6>
-                            <form  method="POST" action="{% url 'bank_deposit' %}">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="date" class="form-label">Date</label>
-                                    <input type="date" class="form-control" style="background-color: white;" id="date" name="today" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="amount" class="form-label">Amount</label>
-                                    <input type="number" class="form-control" id="amount" name="amount" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Narration</label>
-                                    <input type="text" class="form-control" id="disc" name="disc">
-                                </div>
-                                
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
             <!-- Footer Start -->
             <div class="container-fluid pt-4 px-4">
@@ -267,7 +230,54 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
-
+    <script>
+        Chart.defaults.color = "#6C7293";
+        Chart.defaults.borderColor = "#000000";
+    
+        new Chart("myChart", {
+          type: "bar",
+          data: {
+            labels: [{% for i in monthly_exp %} '{{i.amount}}', {% endfor %}],
+            datasets: [{
+                label: 'Total Expense',
+                data: [{% for i in monthly_exp %} {{i.amount}}, {% endfor %}],
+                backgroundColor: "rgba(235, 22, 22, .7)"
+              }]
+            
+            },
+          options: {
+            legend: {display: false},
+            title: {
+              responsive : true,
+              display: true
+            }
+          }
+        });
+    </script>
+    <script>
+        Chart.defaults.color = "#6C7293";
+        Chart.defaults.borderColor = "#000000";
+    
+        new Chart("myChart1", {
+          type: "bar",
+          data: {
+            labels: [{% for i in monthly_inc %} '{{i.amount}}', {% endfor %}],
+            datasets: [{
+                label: 'Total Expense',
+                data: [{% for i in monthly_inc %} {{i.amount}}, {% endfor %}],
+                backgroundColor: "rgba(235, 22, 22, .7)"
+              }]
+            
+            },
+          options: {
+            legend: {display: false},
+            title: {
+              responsive : true,
+              display: true
+            }
+          }
+        });
+    </script>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

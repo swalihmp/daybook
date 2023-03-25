@@ -1,13 +1,15 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-from .models import Income,Expense,Expenses,Incomes,Doctor,DayClose,Cash_InHand
+from .models import Income,Expense,Expenses,Incomes,Doctor,DayClose,Cash_InHand,Doc_op
 from django.contrib import messages,auth
 from django.db.models import Q
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+@login_required(login_url = 'login')
 def addexp(request):
     date = datetime.now().date()
     expenses = Expenses.objects.filter(date=date).order_by('id')
@@ -39,6 +41,9 @@ def add_exp(request):
     else:
         return redirect('login')
 
+
+
+@login_required(login_url = 'login')
 def addincome(request):
     date = datetime.now().date()
     incomes = Incomes.objects.filter(date=date).order_by('id')
@@ -48,6 +53,8 @@ def addincome(request):
         'incomes':incomes
     }
     return render(request,'addincome.html',context)
+
+
 
 def add_inc(request):
     if request.user.is_authenticated:
@@ -69,6 +76,9 @@ def add_inc(request):
     else:
         return redirect('login')
 
+
+
+@login_required(login_url = 'login')
 def new_income(request):
     if request.method == 'POST':
         if Income.objects.filter(inc_name = request.POST['inc_name']).exists():
@@ -82,7 +92,9 @@ def new_income(request):
             return redirect('addincome')
     else:
         return redirect('addincome')
-        
+
+
+@login_required(login_url = 'login')        
 def new_exp(request):
     if request.method == 'POST':
         if Expense.objects.filter(exp_name = request.POST['exp_name']).exists():
@@ -96,15 +108,39 @@ def new_exp(request):
             return redirect('addexp')
     else:
         return redirect('addexp')
-    
+
+
+
+@login_required(login_url = 'login')    
 def doctors(request):
-    doctors = Doctor.objects.all().order_by('id')
-    
-    context = {
-        'doctors':doctors
-    }
-    return render(request,'doctorop.html',context)
-    
+    if request.method == 'POST':
+        doc_name = request.POST['doc_name']
+        op = request.POST['op']
+        disc = request.POST['disc']
+        today = request.POST['today']
+
+        user = request.user
+        doctor = Doctor.objects.get(doc_name = doc_name)
+        
+        Doc_op.objects.create(user=user,date=today,doc_name=doctor,opnum=op,disc = disc)
+        
+        doctors = Doctor.objects.all().order_by('id')
+        
+        context = {
+            'doctors':doctors
+        }
+        return render(request,'doctorop.html',context)
+    else:
+        doctors = Doctor.objects.all().order_by('id')
+        
+        context = {
+            'doctors':doctors
+        }
+        return render(request,'doctorop.html',context)
+
+
+
+@login_required(login_url = 'login')    
 def new_doc(request):
     if request.method == 'POST':
         if Doctor.objects.filter(doc_name = request.POST['doc_name']).exists():
@@ -119,7 +155,9 @@ def new_doc(request):
     else:
         return redirect('doctors')
     
-    
+
+
+@login_required(login_url = 'login')    
 def mark(request,id):
     expense = Expenses.objects.get(id=id)
 
@@ -161,6 +199,9 @@ def mark(request,id):
 #     else:
 #         return redirect('login')
 
+
+
+@login_required(login_url = 'login')
 def credits(request):
     credit = Expenses.objects.filter(status=False,exp_type='credit')
     context={
@@ -203,7 +244,9 @@ def cmark(request,id):
         Incomes.objects.create(user=user,inc=inc_name,amount=amount,date = today,time=time,disc=disc+","+str(exp_date))
         
         return redirect('credits')
-    
+
+
+@login_required(login_url = 'login')    
 def search(request):
     context={
         'expenses': Expense.objects.all()
@@ -233,7 +276,10 @@ def search_data(request):
         return render(request,'search.html',context)
     else:
         return redirect('search')
-    
+
+
+
+@login_required(login_url = 'login')    
 def dayclose(request):
     if request.method=='POST':
         today = request.POST['today']
@@ -268,6 +314,8 @@ def dayclose(request):
     else:
         return render(request,'Dayclose.html')
 
+
+@login_required(login_url = 'login')
 def daycloseamount(request):
     if request.method=='POST':
         today = request.POST['today']

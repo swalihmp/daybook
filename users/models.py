@@ -4,7 +4,6 @@ from adminp.models import Account
 
 class Expense(models.Model):
     exp_name = models.CharField(max_length=100, null=False)
-    
     def __str__(self):
         return self.exp_name
     
@@ -40,8 +39,10 @@ class Doctor(models.Model):
     
 class Doc_op(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    date = models.DateField(null=False)
     doc_name = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     opnum = models.IntegerField(null=False)
+    disc = models.CharField(max_length=10,null=False)
     
 class DayClose(models.Model):
     date = date = models.DateField(null=False)
